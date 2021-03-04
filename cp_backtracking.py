@@ -32,45 +32,42 @@ def board_by_box(board):
 
 	return board_box
 
-def first_round(board_row, board_col, board_box):
+def iterative_cp(board_row, board_col, board_box):
+	flag = True
+
+	while(flag):
+		flag = False
+
+		for i in range(0,9):
+			for j in range(0,9):
+
+				if isinstance(board_row[i][j], list):
+
+					for k in board_row[i][j]:
+						if (k in board_row[i]) or (k in board_col[j]) or (k in board_box[(i//3)*3 + j//3]):
+							board_row[i][j].remove(k)
+							flag = True
+
+					if len(board_row[i][j]) == 1:
+						board_row[i][j] = board_row[i][j][0]
+
+		board_col = board_by_col(board_row)
+		board_box = board_by_box(board_row)
+
+def constrain_propagation(board_row, board_col, board_box):
 	for i in range(0,9):
 		for j in range(0,9):
+
 			if board_row[i][j] == 0:
 				n = []
+
 				for k in range(1,10):
 					if not(k in board_row[i]) and not(k in board_col[j]) and not(k in board_box[(i//3)*3 + j//3]):
 						n.append(k)
+
 				if len(n) == 1:
 					n = n[0]
+
 				board_row[i][j] = n
 
-	board_col = board_by_col(board_row)
-	board_box = board_by_box(board_row)
-
-#-----------RELAXATION LABELING-----------###################################################################################################
-
-
-
-#-----------MAIN-----------###################################################################################################
-
-board_row =[[3,7,0,5,0,0,0,0,6],
-	        [0,0,0,3,6,0,0,1,2],
-	        [0,0,0,0,9,1,7,5,0],
-	        [0,0,0,1,5,4,0,7,0],
-	        [0,0,3,0,7,0,6,0,0],
-	        [0,5,0,6,3,8,0,0,0],
-	        [0,6,4,9,8,0,0,0,0],
-	        [5,9,0,0,2,6,0,0,0],
-	        [2,0,0,0,0,5,0,6,4]]
-l = 9
-
-board_col = board_by_col(board_row)
-board_box = board_by_box(board_row)
-
-first_round(board_row, board_col, board_box)
-
-for i in board_row:
-	print(i)
-#print(board_col)
-#print(board_box)
-#print(solve(board_row, board_col, board_box))
+	iterative_cp(board_row, board_col, board_box)
