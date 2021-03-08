@@ -71,3 +71,55 @@ def constrain_propagation(board_row, board_col, board_box):
 				board_row[i][j] = n
 
 	iterative_cp(board_row, board_col, board_box)
+	
+	
+def delete_forward(x, board, r, c) -> object:
+    # print("rrr",x, r, c) # DEBUG
+
+    for j in range(c, len(board[r])):
+        if (not isinstance(board[r][j], int)) and (x in board[r][j]):
+            board[r][j].remove(x)
+            if len(board[r][j]) == 0 and j != c:
+                # print("a", x,r,c) # DEBUG
+                return False
+    for j in range(r, len(board)):
+        if (not isinstance(board[j][c], int)) and (x in board[j][c]):
+            board[j][c].remove(x)
+            if len(board[j][c]) == 0 and j != r:
+                # print("b", x,r,c) # DEBUG
+                return False
+    nrows = 3 - r % 3
+    ncols = 3 - c % 3
+    for i in range(0, nrows):
+        for j in range(0, ncols):
+            if (not isinstance(board[r + i][c + j], int)) and (x in board[r + i][c + j]):
+
+                board[r + i][c + j].remove(x)
+                if len(board[r + i][c + j]) == 0 and j != c and i != r:
+                    # print("c", x,r,c) # DEBUG
+                    return False
+    board[r][c] = x
+    return True
+
+
+def backtracking_theRevenge(board_row, row, col, board_res):
+    if row == 9 and col == 0:
+        return True
+    else:
+        if col == 9:
+            return backtracking_theRevenge(board_row, row + 1, 0, board_res)
+        else:
+            if isinstance(board_row[row][col], int):
+                return backtracking_theRevenge(board_row, row, col + 1, board_res)
+            else:
+                for i in range(len(board_row[row][col])):
+                    x = board_row[row][col][i]
+                    temp = copy.deepcopy(board_row)
+                    if delete_forward(x, board_row, row, col):
+                        res = backtracking_theRevenge(board_row, row, col + 1, board_res)
+                        if res:
+                            board_res[row][col] = x
+                            return res
+                    board_row = temp
+                    # print(board_row) #DEBUG
+                return False
