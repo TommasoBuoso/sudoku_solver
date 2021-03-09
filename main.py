@@ -1,8 +1,10 @@
-#python3
 from cp_backtracking import constrain_propagation, board_by_col, board_by_box, backtracking
 import copy
 
-def is_solved(board_row, board_col, board_box):
+#Function that, given a board, returns True if the sudoku is solved, False otherwise
+def is_solved(board_row):
+	board_col = board_by_col(board_row)
+	board_box = board_by_box(board_row)
 	solved = True
 
 	for i in range(0,9):
@@ -58,9 +60,9 @@ for board_row in boards:
 	board_col = board_by_col(board_row)
 	board_box = board_by_box(board_row)
 
-	constrain_propagation(board_row, board_col, board_box)
+	constrain_propagation(board_row, board_col, board_box)  #first we try only with the contrain propagation
 
-	if is_solved(board_row, board_col, board_box):
+	if is_solved(board_row):
 		print("SUDOKU SOLVED!!")
 
 		for i in board_row:
@@ -71,12 +73,9 @@ for board_row in boards:
 		print("Try with backtracking...")
 
 		board_res = copy.deepcopy(board_row)
-		backtracking(board_row, 0, 0, board_res)
-
-		board_col = board_by_col(board_res)
-		board_box = board_by_box(board_res)
-
-		if is_solved(board_res, board_col, board_box):
+		backtracking(board_row, 0, 0, board_res)            #if only with the contrain propagation is not enough
+															#we go with the backtracking solution
+		if is_solved(board_res):
 			print("SUDOKU SOLVED!!")
 
 			for i in board_res:
