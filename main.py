@@ -1,5 +1,6 @@
 #python3
 from cp_backtracking import constrain_propagation, board_by_col, board_by_box
+from backtracking import backtracking, define_ris
 
 def is_solved(board_row, board_col, board_box):
 	solved = True
@@ -48,6 +49,10 @@ constrain_propagation(board_row, board_col, board_box)
 
 for i in board_row:
 	print(i)
+	
+print(backtracking(board_row, 0, 0, [[], [], [], [], [], [], [], [], []], [[], [], [], [], [], [], [], [], []],
+					  [[] for y in range(9) for _ in range(9)], board_ris))
+print(board_ris)
 
 is_solved(board_row, board_col, board_box)
 #print(board_col)
