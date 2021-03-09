@@ -1,5 +1,6 @@
 from cp_backtracking import constrain_propagation, board_by_col, board_by_box, backtracking
 import copy
+import time
 
 #Function that, given a board, returns True if the sudoku is solved, False otherwise
 def is_solved(board_row):
@@ -44,15 +45,15 @@ boards.append([[0,0,0,0,2,0,0,4,0],
 				[8,0,0,0,0,4,0,0,0]])
 
 #Very difficult sudoku
-#boards.append([[0,4,0,9,2,0,0,0,0],
-#				[0,2,0,0,0,0,0,0,0],
-#				[0,0,0,0,0,0,0,1,3],
-#				[0,0,0,4,3,0,0,0,2],
-#				[2,5,8,0,0,6,0,0,0],
-#				[0,0,4,1,0,0,0,0,9],
-#				[0,0,0,0,0,0,5,8,0],
-#				[8,0,9,0,7,3,0,0,0],
-#				[0,0,0,0,0,1,0,3,0]])
+boards.append([[0,4,0,9,2,0,0,0,0],
+				[0,2,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,1,3],
+				[0,0,0,4,3,0,0,0,2],
+				[2,5,8,0,0,6,0,0,0],
+				[0,0,4,1,0,0,0,0,9],
+				[0,0,0,0,0,0,5,8,0],
+				[8,0,9,0,7,3,0,0,0],
+				[0,0,0,0,0,1,0,3,0]])
 
 for board_row in boards:
 	print("############################################")
@@ -60,10 +61,14 @@ for board_row in boards:
 	board_col = board_by_col(board_row)
 	board_box = board_by_box(board_row)
 
+	start = time.time()
+
 	constrain_propagation(board_row, board_col, board_box)  #first we try only with the contrain propagation
 
 	if is_solved(board_row):
 		print("SUDOKU SOLVED!!")
+		end = time.time()
+		print("Time: ", end - start)
 
 		for i in board_row:
 			print(i)
@@ -77,6 +82,8 @@ for board_row in boards:
 															#we go with the backtracking solution
 		if is_solved(board_res):
 			print("SUDOKU SOLVED!!")
+			end = time.time()
+			print("Time: ", end - start)
 
 			for i in board_res:
 				print(i)
