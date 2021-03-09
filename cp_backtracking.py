@@ -1,6 +1,8 @@
 #-----------CP & BACKTRACKING-----------###################################################################################################
 
-def board_by_col(board):
+#Function that takes for input the sudoku board by row, and returns the board by columns.
+#The list generated contains the 9 columns of the sudoku boards as sublists.
+def board_by_col(board): 
 	board_col = []
 
 	for i in range(0,9):
@@ -11,6 +13,8 @@ def board_by_col(board):
 
 	return board_col
 
+#Function that takes for input the sudoku board by row, and returns the board by box.
+#The list generated contains the 9 sub-boxes of the sudoku boards as sublists.
 def board_by_box(board):
 	board_box = [[],[],[],
 				 [],[],[],
@@ -54,6 +58,7 @@ def iterative_cp(board_row, board_col, board_box):
 		board_col = board_by_col(board_row)
 		board_box = board_by_box(board_row)
 
+#First iteratio of the costrain propagation
 def constrain_propagation(board_row, board_col, board_box):
 	for i in range(0,9):
 		for j in range(0,9):
