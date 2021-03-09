@@ -1,3 +1,5 @@
+import copy
+
 #-----------CP & BACKTRACKING-----------###################################################################################################
 
 #Function that takes for input the sudoku board by row, and returns the board by columns.
@@ -60,12 +62,15 @@ def iterative_cp(board_row, board_col, board_box):
 
 #First iteratio of the costrain propagation
 def constrain_propagation(board_row, board_col, board_box):
+	#for each element of the board
 	for i in range(0,9):
 		for j in range(0,9):
 
-			if board_row[i][j] == 0:
+			if board_row[i][j] == 0: #if the elemtent is empty
 				n = []
 
+				#assign the element a list that contains all the number between 1 and 9 that could be part of a consistent solution
+				#so all the number that are not already in the same row, column or box
 				for k in range(1,10):
 					if not(k in board_row[i]) and not(k in board_col[j]) and not(k in board_box[(i//3)*3 + j//3]):
 						n.append(k)
@@ -75,56 +80,65 @@ def constrain_propagation(board_row, board_col, board_box):
 
 				board_row[i][j] = n
 
-	iterative_cp(board_row, board_col, board_box)
+	#iterate the propagation of the contrains until the board change
+	iterative_cp(board_row, board_by_col(board_row), board_by_box(board_row))
 	
 	
 def delete_forward(x, board, r, c) -> object:
-    # print("rrr",x, r, c) # DEBUG
-
     for j in range(c, len(board[r])):
+
         if (not isinstance(board[r][j], int)) and (x in board[r][j]):
             board[r][j].remove(x)
+
             if len(board[r][j]) == 0 and j != c:
-                # print("a", x,r,c) # DEBUG
                 return False
+
     for j in range(r, len(board)):
+
         if (not isinstance(board[j][c], int)) and (x in board[j][c]):
             board[j][c].remove(x)
+
             if len(board[j][c]) == 0 and j != r:
-                # print("b", x,r,c) # DEBUG
                 return False
+
     nrows = 3 - r % 3
     ncols = 3 - c % 3
+
     for i in range(0, nrows):
         for j in range(0, ncols):
-            if (not isinstance(board[r + i][c + j], int)) and (x in board[r + i][c + j]):
 
+            if (not isinstance(board[r + i][c + j], int)) and (x in board[r + i][c + j]):
                 board[r + i][c + j].remove(x)
                 if len(board[r + i][c + j]) == 0 and j != c and i != r:
-                    # print("c", x,r,c) # DEBUG
                     return False
+
     board[r][c] = x
     return True
 
 
-def backtracking_theRevenge(board_row, row, col, board_res):
+def backtracking(board_row, row, col, board_res):
     if row == 9 and col == 0:
         return True
+
     else:
         if col == 9:
-            return backtracking_theRevenge(board_row, row + 1, 0, board_res)
+            return backtracking(board_row, row + 1, 0, board_res)
+
         else:
             if isinstance(board_row[row][col], int):
-                return backtracking_theRevenge(board_row, row, col + 1, board_res)
+                return backtracking(board_row, row, col + 1, board_res)
             else:
                 for i in range(len(board_row[row][col])):
                     x = board_row[row][col][i]
-                    temp = copy.deepcopy(board_row)
+                    tmp = copy.deepcopy(board_row)
+
                     if delete_forward(x, board_row, row, col):
-                        res = backtracking_theRevenge(board_row, row, col + 1, board_res)
+                        res = backtracking(board_row, row, col + 1, board_res)
+
                         if res:
                             board_res[row][col] = x
                             return res
-                    board_row = temp
-                    # print(board_row) #DEBUG
+
+                    board_row = tmp
+
                 return False

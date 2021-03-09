@@ -1,6 +1,6 @@
 #python3
-from cp_backtracking import constrain_propagation, board_by_col, board_by_box
-from backtracking import backtracking, define_ris
+from cp_backtracking import constrain_propagation, board_by_col, board_by_box, backtracking
+import copy
 
 def is_solved(board_row, board_col, board_box):
 	solved = True
@@ -13,48 +13,73 @@ def is_solved(board_row, board_col, board_box):
 				solved = False
 				break
 
-	if solved:
-		print("SUDOKU SOLVED!!")
-	else:
-		print("NOT SOLVED =(")
+	return solved
 
 #-----------MAIN-----------###################################################################################################
 
+boards = []
+
 #Solved only with constrain propagation
-board_row =[[3,7,0,5,0,0,0,0,6],
-	        [0,0,0,3,6,0,0,1,2],
-	        [0,0,0,0,9,1,7,5,0],
-	        [0,0,0,1,5,4,0,7,0],
-	        [0,0,3,0,7,0,6,0,0],
-	        [0,5,0,6,3,8,0,0,0],
-	        [0,6,4,9,8,0,0,0,0],
-	        [5,9,0,0,2,6,0,0,0],
-	        [2,0,0,0,0,5,0,6,4]]
+boards.append([[3,7,0,5,0,0,0,0,6],
+				[0,0,0,3,6,0,0,1,2],
+				[0,0,0,0,9,1,7,5,0],
+				[0,0,0,1,5,4,0,7,0],
+				[0,0,3,0,7,0,6,0,0],
+				[0,5,0,6,3,8,0,0,0],
+				[0,6,4,9,8,0,0,0,0],
+				[5,9,0,0,2,6,0,0,0],
+				[2,0,0,0,0,5,0,6,4]])
 
 #Not solved only with constrain propagation
-#board_row = [[0,0,0,0,2,0,0,4,0],
-#			[0,0,8,0,3,5,0,0,0],
-#			[0,0,0,0,7,0,6,0,2],
-#			[0,3,1,0,4,6,9,7,0],
-#			[2,0,0,0,0,0,0,0,0],
-#			[0,0,0,5,0,1,2,0,3],
-#			[0,4,9,0,0,0,7,3,0],
-#			[0,0,0,0,0,0,0,1,0],
-#			[8,0,0,0,0,4,0,0,0]]
+boards.append([[0,0,0,0,2,0,0,4,0],
+				[0,0,8,0,3,5,0,0,0],
+				[0,0,0,0,7,0,6,0,2],
+				[0,3,1,0,4,6,9,7,0],
+				[2,0,0,0,0,0,0,0,0],
+				[0,0,0,5,0,1,2,0,3],
+				[0,4,9,0,0,0,7,3,0],
+				[0,0,0,0,0,0,0,1,0],
+				[8,0,0,0,0,4,0,0,0]])
 
-board_col = board_by_col(board_row)
-board_box = board_by_box(board_row)
+#Very difficult sudoku
+#boards.append([[0,4,0,9,2,0,0,0,0],
+#				[0,2,0,0,0,0,0,0,0],
+#				[0,0,0,0,0,0,0,1,3],
+#				[0,0,0,4,3,0,0,0,2],
+#				[2,5,8,0,0,6,0,0,0],
+#				[0,0,4,1,0,0,0,0,9],
+#				[0,0,0,0,0,0,5,8,0],
+#				[8,0,9,0,7,3,0,0,0],
+#				[0,0,0,0,0,1,0,3,0]])
 
-constrain_propagation(board_row, board_col, board_box)
+for board_row in boards:
+	print("############################################")
 
-for i in board_row:
-	print(i)
-	
-print(backtracking(board_row, 0, 0, [[], [], [], [], [], [], [], [], []], [[], [], [], [], [], [], [], [], []],
-					  [[] for y in range(9) for _ in range(9)], board_ris))
-print(board_ris)
+	board_col = board_by_col(board_row)
+	board_box = board_by_box(board_row)
 
-is_solved(board_row, board_col, board_box)
-#print(board_col)
-#print(board_box)
-#print(solve(board_row, board_col, board_box))
+	constrain_propagation(board_row, board_col, board_box)
+
+	if is_solved(board_row, board_col, board_box):
+		print("SUDOKU SOLVED!!")
+
+		for i in board_row:
+			print(i)
+
+	else:
+		print("SUDOKU NOT SOLVED =(")
+		print("Try with backtracking...")
+
+		board_res = copy.deepcopy(board_row)
+		backtracking(board_row, 0, 0, board_res)
+
+		board_col = board_by_col(board_res)
+		board_box = board_by_box(board_res)
+
+		if is_solved(board_res, board_col, board_box):
+			print("SUDOKU SOLVED!!")
+
+			for i in board_res:
+				print(i)
+		else:
+			print("FAIL")
