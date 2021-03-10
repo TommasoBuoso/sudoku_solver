@@ -1,6 +1,6 @@
 import copy
 
-#-----------CONSTRAIN PROPAGATION & BACKTRACKING-----------###################################################################################################
+#-----------CONSTRAIN PROPAGATION-----------###################################################################################################
 
 #Function that takes for input the sudoku board by row, and returns the board by columns.
 #The list generated contains the 9 columns of the sudoku boards as sublists.
@@ -93,6 +93,8 @@ def constrain_propagation(board_row, board_col, board_box):
 	iterative_cp(board_row, board_by_col(board_row), board_by_box(board_row))
 	
 
+#-----------BACKTRACKING-----------###################################################################################################
+
 #Function that performs the forward checking for the backtracking
 #Given a number and its position on the sudoku board, delete that number from the other lists on the same row, column and box of that number.
 #If at some point, by deleting this element, we obtain an empty list, then return False, otherwise return True.
@@ -124,7 +126,7 @@ def delete_forward(x, board, r, c):
 				if len(board[r + i][c + j]) == 0 and j != c and i != r:
 					return False
 
-	board[r][c] = x
+	board[r][c] = x	#insert the correct element in the board
 	return True
 
 
