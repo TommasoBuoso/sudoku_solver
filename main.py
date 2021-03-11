@@ -95,6 +95,5 @@ boards.append([[0,0,0,0,2,0,0,4,0],
 r = generateR()
 p = relaxation_labeling(boards[0], r, 500)
 board = from_p_to_board( p )
-print(p)
 for b in board:
 	print(b)

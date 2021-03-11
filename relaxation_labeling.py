@@ -7,7 +7,6 @@ from cp_backtracking import board_by_col, board_by_box
 #Fuction that takes the final vector of probabilities p and generates a sudoku board
 def from_p_to_board(p):
 	p = np.round(p)
-	print(p)
 	board = np.zeros((9,9))
 
 	for i in range(9):
