@@ -1,5 +1,5 @@
 from cp_backtracking import constrain_propagation, board_by_col, board_by_box, backtracking
-from relaxation_labeling import generateP, generateR, generateQ
+from relaxation_labeling import generateR, relaxation_labeling, relaxation_labeling2, from_p_to_board
 import copy
 import time
 
@@ -91,8 +91,8 @@ boards.append([[0,0,0,0,2,0,0,4,0],
 #	   else:
 #		   print("FAIL")
 
-p = generateP(boards[0])
 
 r = generateR()
-
-print(generateQ(p, r, 0, 0))
+board_row = from_p_to_board( relaxation_labeling2(boards[0], r, 400) )
+for i in board_row:
+   print(i)

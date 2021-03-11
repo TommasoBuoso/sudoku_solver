@@ -1,7 +1,22 @@
 import numpy as np
+import copy
 from cp_backtracking import board_by_col, board_by_box
 
 #-----------RELAXATION LABELING-----------###################################################################################################
+
+#Fuction that takes the final vector of probabilities p and generates a sudoku board
+def from_p_to_board(p):
+	board = np.zeros((9,9))
+
+	for i in range(9):
+		for j in range(9):
+			if 1 in p[i][j]:
+				board[i][j] = np.where(p[i][j] == 1)
+			else:
+				print("FAIL")
+				return board
+
+	return board
 
 #Function that generates the matrix of compatibility coefficients R
 def generateR():
@@ -27,16 +42,35 @@ def generateR():
 	return r
 
 
+#Function that computes the quantifiers that support the context of a certain p
+def generateQ(p, r, row, col):
+	q = np.zeros(10)
+
+	r1 = r[row][col]
+
+	for label in range(1,10):
+
+		r2 = r1[label]
+
+		for i in range(9):
+			for j in range(9):
+				for mu in range(1,10):
+
+					q[label] += r2[i][j][mu] * p[i][j][mu]
+
+	return q
+
+
 #Function that generates the initial vector of probability p_0
 def generateP(board):
-	p = np.empty((9,9,9))
+	p = np.zeros((9,9,10))
 
 	for r in range(9):
 		for c in range(9):
-			x = np.zeros(9)
+			x = np.zeros(10)
 
 			if board[r][c] != 0:
-				x[board[r][c] - 1] = 1
+				x[board[r][c]] = 1
 
 			else:
 				count = 0
@@ -46,10 +80,10 @@ def generateP(board):
 				for i in range(1,10):
 
 					if not(i in board[r]) and not(i in board_col[c]) and not(i in board_box[(r//3)*3 + c//3]):
-						x[i - 1] = 1
+						x[i] = 1
 						count = count + 1
 
-				for i in range(0,len(x)):
+				for i in range(1,len(x)):
 					x[i] = x[i] / count
 
 			p[r][c] = x
@@ -58,15 +92,96 @@ def generateP(board):
 
 
 #Function that computes the quantifiers that support the context of a certain p
-def generateQ(p, r, row, col):
-	q = np.zeros(10)
+#def generateQ2(p, r, row, col):
+#	q = np.zeros(10)
+#
+#	for label in range(1,10):
+#
+#		q[label] = np.sum( np.dot(p, r[row][label][col]) )
+#
+#	return q
 
-	for label in range(1,10):
+#Function that updates the vector p^{t} -> p^{t+1}
+def updateP2(p, r):
+	res = np.empty((9,9,10))
 
-		for i in range(9):
-			for j in range(9):
-				for mu in range(1,10):
 
-					q[label] += r[row][col][label][i][j][mu] * p[i][j][mu - 1]
+	for row in range(9):
+		for col in range(9):
+			q = generateQ(p, r, row, col)
 
-	return q
+			for label in range(1,10):
+
+			 	num = p[row][col][label] * q[label]
+			 	den = np.sum( np.dot(p[row][col], q) )
+
+			 	k = num / den
+			 	if np.round(k, 1) == 1:
+			 		k = 1
+			 		res[row][col] = np.zeros(10)
+
+			 	res[row][col][label] = k
+
+	return res
+
+
+
+def relaxation_labeling2(board, r, iteration_limit):
+	p = generateP(board)
+	count = 0
+	p_prev = np.zeros((9,9,10))
+
+	while count < iteration_limit and not( np.array_equal(p, p_prev)):
+		p_prev = copy.deepcopy(p)
+		p = updateP2(p, r)
+		count += 1
+		#if count % 100 == 0:
+		print(count)
+
+	return np.round(p)
+
+
+
+
+
+####################################---------------------SLOW VERSION---------------------#########################################################################################
+
+
+#Function that updates the vector p^{t} -> p^{t+1}
+def updateP(p, r):
+	res = np.zeros((9,9,10))
+
+
+	for row in range(9):
+		for col in range(9):
+			q = generateQ(p, r, row, col)
+
+			for label in range(1,10):
+			 	num = p[row][col][label] * q[label]
+			 	den = 0
+
+			 	for mu in range(1,10):
+			 		den += p[row][col][mu] * q[mu]
+
+			 	k = num / den
+			 	if np.round(k, 1) == 1:
+			 		k = 1
+			 		res[row][col] = np.zeros(10)
+
+			 	res[row][col][label] = k
+
+	return res
+
+
+def relaxation_labeling(board, r, iteration_limit):
+	p = generateP(board)
+	count = 0
+	p_prev = np.zeros((9,9,10))
+
+	while count < iteration_limit and not( np.array_equal(p, p_prev)):
+		p_prev = copy.deepcopy(p)
+		p = updateP(p, r)
+		count += 1
+		print(count)
+
+	print(np.round(p))
