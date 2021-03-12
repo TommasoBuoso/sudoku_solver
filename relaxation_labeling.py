@@ -17,7 +17,7 @@ def from_p_to_board(p):
 			if board[i][j] == 0:
 				print("FAIL")
 
-	return board
+	return board.tolist()
 
 #Function that generates the matrix of compatibility coefficients R
 def generateR():
@@ -62,14 +62,23 @@ def generateQ(p, r, row, col):
 	return q
 
 #Function that computes the quantifiers that support the context of a certain p
-#def generateQ2(p, r, row, col):
-#	q = np.zeros(10)
-#
+def generateQ2(p, r, row, col, dict_non_zeros):
+	q = np.zeros(10)
+	r1 = r[row][col]
+
+	for label in range(1,10):
+
+		r2 = r1[label]
+
+		for i,j in dict_non_zeros:
+			for mu in range(1,10)
+				q[label] = r2[i][j] * p[i][j][mu]
+
 #	for label in range(1,10):
 #
-#		q[label] = np.sum( np.dot(p, r[row][label][col]) )
-#
-#	return q
+#		q[label] = np.sum( np.matmul(r[row][col][label], p.reshape(9,10,9)) )
+
+	return q
 
 
 #Function that generates the initial vector of probability p_0
@@ -104,24 +113,25 @@ def generateP(board):
 
 #Function that updates the vector p^{t} -> p^{t+1}
 def updateP(p, r):
-	res = np.empty((9,9,10))
-
+	res = copy.deepcopy(p)
 
 	for row in range(9):
 		for col in range(9):
-			q = generateQ(p, r, row, col)
 
-			for label in range(1,10):
+			if not( 1 in res[row][col] ):
+				q = generateQ(p, r, row, col)
 
-			 	num = p[row][col][label] * q[label]
-			 	den = np.sum( np.dot(p[row][col], q) )
+				for label in range(1,10):
 
-			 	k = num / den
-			 	if np.round(k, 1) == 1:
-			 		k = 1
-			 		res[row][col] = np.zeros(10)
+				 	num = p[row][col][label] * q[label]
+				 	den = np.sum( np.dot(p[row][col], q) )
 
-			 	res[row][col][label] = k
+				 	k = num / den
+				 	if np.round(k, 1) == 1:
+				 		k = 1
+				 		res[row][col] = np.zeros(10)
+
+				 	res[row][col][label] = k
 
 	return res
 

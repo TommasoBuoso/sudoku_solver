@@ -97,3 +97,5 @@ p = relaxation_labeling(boards[0], r, 500)
 board = from_p_to_board( p )
 for b in board:
 	print(b)
+if is_solved(board):
+	print("SOLVED")
