@@ -44,25 +44,7 @@ def generateR():
 
 
 #Function that computes the quantifiers that support the context of a certain p
-def generateQ(p, r, row, col):
-	q = np.zeros(10)
-
-	r1 = r[row][col]
-
-	for label in range(1,10):
-
-		r2 = r1[label]
-
-		for i in range(9):
-			for j in range(9):
-				for mu in range(1,10):
-
-					q[label] += r2[i][j][mu] * p[i][j][mu]
-
-	return q
-
-#Function that computes the quantifiers that support the context of a certain p
-def generateQ2(p, r, row, col, dict_non_zeros):
+def generateQ(p, r, row, col, dict_non_zeros):
 	q = np.zeros(10)
 	r1 = r[row][col]
 
@@ -70,13 +52,9 @@ def generateQ2(p, r, row, col, dict_non_zeros):
 
 		r2 = r1[label]
 
-		for i,j in dict_non_zeros:
-			for mu in range(1,10)
-				q[label] = r2[i][j] * p[i][j][mu]
-
-#	for label in range(1,10):
-#
-#		q[label] = np.sum( np.matmul(r[row][col][label], p.reshape(9,10,9)) )
+		for i,j in dict_non_zeros.keys():
+			for mu in dict_non_zeros[(i,j)]:
+				q[label] += r2[i][j][mu] * p[i][j][mu]
 
 	return q
 
@@ -84,6 +62,7 @@ def generateQ2(p, r, row, col, dict_non_zeros):
 #Function that generates the initial vector of probability p_0
 def generateP(board):
 	p = np.zeros((9,9,10))
+	dict_non_zeros = {}
 
 	for r in range(9):
 		for c in range(9):
@@ -97,29 +76,34 @@ def generateP(board):
 				board_col = board_by_col(board)
 				board_box = board_by_box(board)
 
+				dict_non_zeros[(r,c)] = []
+
 				for i in range(1,10):
 
 					if not(i in board[r]) and not(i in board_col[c]) and not(i in board_box[(r//3)*3 + c//3]):
 						x[i] = 1
 						count = count + 1
 
+						dict_non_zeros[(r,c)].append(i)
+
 				for i in range(1,len(x)):
 					x[i] = x[i] / count
 
 			p[r][c] = x
 
-	return p
+	return p, dict_non_zeros
 
 
 #Function that updates the vector p^{t} -> p^{t+1}
-def updateP(p, r):
+def updateP(p, r, dict_non_zeros):
 	res = copy.deepcopy(p)
 
 	for row in range(9):
 		for col in range(9):
 
 			if not( 1 in res[row][col] ):
-				q = generateQ(p, r, row, col)
+				#q = generateQ_slow(p, r, row, col)
+				q = generateQ(p, r, row, col, dict_non_zeros)
 
 				for label in range(1,10):
 
@@ -138,15 +122,37 @@ def updateP(p, r):
 
 
 def relaxation_labeling(board, r, iteration_limit):
-	p = generateP(board)
+	p, dict_non_zeros = generateP(board)
 	count = 0
 	p_prev = np.zeros((9,9,10))
 
 	while count < iteration_limit and not( np.array_equal(p, p_prev)):
 		p_prev = copy.deepcopy(p)
-		p = updateP(p, r)
+		p = updateP(p, r, dict_non_zeros)
 		count += 1
 		if count % 100 == 0:
 			print(count)
 
 	return p
+
+
+#-------------------SLOW VERSION-------------------########################################################################################################################
+
+
+#Function that computes the quantifiers that support the context of a certain p
+def generateQ_slow(p, r, row, col):
+	q = np.zeros(10)
+
+	r1 = r[row][col]
+
+	for label in range(1,10):
+
+		r2 = r1[label]
+
+		for i in range(9):
+			for j in range(9):
+				for mu in range(1,10):
+
+					q[label] += r2[i][j][mu] * p[i][j][mu]
+
+	return q
