@@ -91,6 +91,8 @@ boards.append([[0,0,0,0,2,0,0,4,0],
 #	   else:
 #		   print("FAIL")
 
+import time
+start_time = time.time()
 
 r = generateR()
 p = relaxation_labeling(boards[0], r, 500)
@@ -99,3 +101,4 @@ for b in board:
 	print(b)
 if is_solved(board):
 	print("SOLVED")
+print("--- %s seconds ---" % (time.time() - start_time))
