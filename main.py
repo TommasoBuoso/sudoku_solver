@@ -34,6 +34,28 @@ boards.append([[3,7,0,5,0,0,0,0,6],
 				[5,9,0,0,2,6,0,0,0],
 				[2,0,0,0,0,5,0,6,4]])
 
+#Easy
+boards.append([[6,0,0,0,1,7,3,0,0],
+				[0,4,3,0,2,0,0,0,1],
+				[0,5,0,0,9,0,7,0,0],
+				[0,0,0,2,6,0,0,0,0],
+				[0,1,6,4,0,5,0,3,0],
+				[0,0,0,1,8,9,0,0,2],
+				[0,0,0,0,0,0,2,5,8],
+				[0,0,4,0,0,6,9,0,0],
+				[5,9,1,0,0,2,4,0,0]])
+
+#Medium
+boards.append([[0,9,6,0,0,8,3,0,0],
+				[0,0,0,0,0,0,0,0,0],
+				[4,0,0,0,1,0,0,9,7],
+				[6,0,0,7,8,0,5,3,0],
+				[0,0,0,0,0,0,1,0,0],
+				[0,3,4,0,0,0,0,0,0],
+				[9,0,0,0,0,6,7,0,4],
+				[5,0,0,0,9,0,0,0,0],
+				[0,0,0,8,7,0,0,0,1]])
+
 #Not solved only with constrain propagation
 boards.append([[0,0,0,0,2,0,0,4,0],
 				[0,0,8,0,3,5,0,0,0],
@@ -91,14 +113,19 @@ boards.append([[0,0,0,0,2,0,0,4,0],
 #	   else:
 #		   print("FAIL")
 
-import time
+r = generateR()
+
 start_time = time.time()
 
-r = generateR()
-p = relaxation_labeling(boards[0], r, 500)
+p = relaxation_labeling(boards[1], r, 1000)
+
+print("--- %s seconds ---" % (time.time() - start_time))
+
 board = from_p_to_board( p )
+
 for b in board:
 	print(b)
 if is_solved(board):
 	print("SOLVED")
-print("--- %s seconds ---" % (time.time() - start_time))
+else:
+	print("NOT SOLVED")
