@@ -108,7 +108,7 @@ for board_row in boards:
 	end_time = time.time()
 
 	if is_solved(board_row):
-	   print("SUDOKU SOLVED - Only with CP, %s seconds" % (end_time - start_time))
+	   print("SOLVED - Only with CP, %s seconds" % (end_time - start_time))
 	   flag = 1
 
 	else:
@@ -121,7 +121,7 @@ for board_row in boards:
 	   end_time = time.time()
 
 	   if is_solved(board_res):
-		   print("SUDOKU SOLVED - With CP & Backtracking, %s seconds" % (end_time - start_time))
+		   print("SOLVED - With CP & Backtracking, %s seconds" % (end_time - start_time))
 		   flag = 1
 		   board_row = board_res
 
