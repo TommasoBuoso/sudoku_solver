@@ -15,8 +15,6 @@ def from_p_to_board(p):
 			for k in range(1, 10):
 				if p[i][j][k] == tmp:
 					board[i][j] = k
-			if board[i][j] == 0:
-				print("FAIL")
 
 	return board.tolist()
 
@@ -58,7 +56,7 @@ def generateQ(p, r, row, col, dict_non_zeros):
 		r2 = r1[label]
 
 		for i, j in dict_non_zeros.keys():
-			# for mu in dict_non_zeros[(i, j)]:
+
 			q[label] += np.dot(r2[i, j, :], p[i, j, :])
 
 	return q
@@ -107,21 +105,15 @@ def updateP(p, r, dict_non_zeros):
 		for col in range(9):
 
 			if not (1 in res[row][col]):
-				# q = generateQ_slow(p, r, row, col)
 				q = generateQ(p, r, row, col, dict_non_zeros)
 
-				#for label in range(1, 10):
-				for label in dict_non_zeros[(row, col)]:
+				res[row, col, :] = np.multiply(p[row, col, :], q[:]) / np.dot(p[row, col, :], q[:])
 
-					tmp = p[row][col][label] * q[label] / np.sum(np.dot(p[row][col], q))
-
-					if np.round(tmp, 1) >= 0.9:
-						tmp = 1
-						res[row][col] = np.zeros(10)
-					elif np.round(tmp, 3) <= 0.01:
-						tmp = 0
-
-					res[row][col][label] = tmp
+				if np.amax(res[row][col]) >= 0.9:
+					tmp = 1
+					tmp_index = np.where(res[row][col] == np.amax(res[row][col]))
+					res[row][col] = np.zeros(10)
+					res[row][col][tmp_index] = tmp
 
 	return res
 
@@ -135,28 +127,7 @@ def relaxation_labeling(board, r, iteration_limit):
 		p_prev = copy.deepcopy(p)
 		p = updateP(p, r, dict_non_zeros)
 		count += 1
-		if count % 100 == 0:
-			print(count)
+		#if count % 100 == 0:
+		#	print(count)
 
 	return p
-
-
-# -------------------SLOW VERSION-------------------########################################################################################################################
-
-
-# Function that computes the quantifiers that support the context of a certain p
-def generateQ_slow(p, r, row, col):
-	q = np.zeros(10)
-
-	r1 = r[row][col]
-
-	for label in range(1, 10):
-
-		r2 = r1[label]
-
-		for i in range(9):
-			for j in range(9):
-				for mu in range(1, 10):
-					q[label] += r2[i][j][mu] * p[i][j][mu]
-
-	return q
