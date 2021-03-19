@@ -3,8 +3,6 @@ import copy
 from cp_backtracking import board_by_col, board_by_box
 
 
-# -----------RELAXATION LABELING-----------###################################################################################################
-
 # Fuction that takes the final vector of probabilities p and generates a sudoku board
 def from_p_to_board(p):
 	board = np.zeros((9, 9))
@@ -17,6 +15,9 @@ def from_p_to_board(p):
 					board[i][j] = k
 
 	return board.tolist()
+
+
+# -----------RELAXATION LABELING-----------###################################################################################################
 
 
 # Function that generates the matrix of compatibility coefficients R

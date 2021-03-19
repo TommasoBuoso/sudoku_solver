@@ -1,6 +1,6 @@
 import copy
 
-#-----------CONSTRAIN PROPAGATION-----------###################################################################################################
+#-----------CONSTRAINT PROPAGATION-----------###################################################################################################
 
 #Function that takes for input the sudoku board by row, and returns the board by columns.
 #The list generated contains the 9 columns of the sudoku boards as sublists.
@@ -40,7 +40,7 @@ def board_by_box(board):
 	return board_box
 
 
-#Function that iterate the constrain propagation until the sudoku board changes
+#Function that iterate the constraint propagation until the sudoku board changes
 def iterative_cp(board_row, board_col, board_box):
 	flag = True
 
@@ -70,7 +70,7 @@ def iterative_cp(board_row, board_col, board_box):
 
 
 #First iteration of the costrain propagation
-def constrain_propagation(board_row, board_col, board_box):
+def constraint_propagation(board_row, board_col, board_box):
 	#for each element of the board
 	for i in range(0,9):
 		for j in range(0,9):

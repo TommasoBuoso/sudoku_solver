@@ -1,4 +1,4 @@
-from cp_backtracking import constrain_propagation, board_by_col, board_by_box, backtracking
+from cp_backtracking import constraint_propagation, board_by_col, board_by_box, backtracking
 from relaxation_labeling import generateR, relaxation_labeling, from_p_to_board
 import copy
 import time
@@ -23,7 +23,7 @@ def is_solved(board_row):
 
 boards = []
 
-#Solved only with constrain propagation
+#Solved only with constraint propagation
 boards.append([[3,7,0,5,0,0,0,0,6],
 				[0,0,0,3,6,0,0,1,2],
 				[0,0,0,0,9,1,7,5,0],
@@ -45,7 +45,7 @@ boards.append([[6,0,0,0,1,7,3,0,0],
 				[0,0,4,0,0,6,9,0,0],
 				[5,9,1,0,0,2,4,0,0]])
 
-#Not solved only with constrain propagation
+#Not solved only with constraint propagation
 boards.append([[0,0,0,0,2,0,0,4,0],
 				[0,0,8,0,3,5,0,0,0],
 				[0,0,0,0,7,0,6,0,2],
@@ -103,7 +103,7 @@ for board_row in boards:
 
 	start_time = time.time()
 
-	constrain_propagation(board_row, board_col, board_box)  #first we try only with the constrain propagation
+	constraint_propagation(board_row, board_col, board_box)  #first we try only with the constraint propagation
 
 	end_time = time.time()
 
@@ -116,7 +116,7 @@ for board_row in boards:
 	   print("Try with backtracking...")
 
 	   board_res = copy.deepcopy(board_row)
-	   backtracking(board_row, 0, 0, board_res)            #if only with the constrain propagation is not enough
+	   backtracking(board_row, 0, 0, board_res)            #if only with the constraint propagation is not enough
 														   #we go with the backtracking solution
 	   end_time = time.time()
 
