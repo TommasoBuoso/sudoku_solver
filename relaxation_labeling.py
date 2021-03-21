@@ -119,7 +119,7 @@ def updateP(p, r, dict_non_zeros):
 	return res
 
 
-# Function that, starting from the initial the probability vector p0, iterates the update of p until it changes of a stop number of iteration is reached
+# Function that, starting from the initial the probability vector p0, iterates the update of p until it changes or a stop number of iteration is reached
 def relaxation_labeling(board, r, iteration_limit):
 	p, dict_non_zeros = generateP(board)
 	count = 0
@@ -129,7 +129,5 @@ def relaxation_labeling(board, r, iteration_limit):
 		p_prev = copy.deepcopy(p)
 		p = updateP(p, r, dict_non_zeros)
 		count += 1
-		#if count % 100 == 0:
-		#	print(count)
 
 	return p

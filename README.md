@@ -84,7 +84,7 @@ for j in range(c, len(board[r])):
 ```
 At the end of the recursion, the board solved will be pointed by the initial board_res pointer.
 ### Complexity
-The complexity both temporal and spacial it's dominated by the depth-first algorithm used in the backtracking phase. So, if we simplify the problem by assuming that the tree search has a constant branching factor $b$, and we assume that the goal node is at depth $d$, the average search time is $O(b^d)$. Instead, the spacial complexity, i.e. maximum memory required, is $O(db)$.
+The complexity both temporal and spacial it's dominated by the depth-first algorithm used in the backtracking phase. So, if we simplify the problem by assuming that the tree search has a constant branching factor $b$, and we assume that the goal node is at depth $d$, the average search time is <img src="https://render.githubusercontent.com/render/math?math=O(b^d)">. Instead, the spacial complexity, i.e. maximum memory required, is $`O(db)`$.
 
 ## Relaxation labeling
 The solver that we are going to analyze in this section is based on the labeling problem, where we have:
@@ -103,13 +103,17 @@ The first phase of generation, thanks to the functions generateP and generateR, 
 
 ### Iterative phase
 In this second and last phase of the solution, starting from $p$ and $r$, we iteratively update $p$ following the update rule:
+
 $$
 p^{(t+1)}_i(\lambda) = \frac{p^{(t)}_i(\lambda) q^{(t)}_i(\lambda)}{\sum_{\mu} p^{(t)}_i(\mu) q^{(t)}_i(\mu)}
 $$
+
 where
+
 $$
 q^{(t)}_i(\lambda) = \sum_{j}\sum_{\mu} r_{ij}(\lambda,\mu) p^{(t)}_j(\mu)
 $$
+
 In our library, the support $q$ is computed by the function generateQ, that takes advantage of the dictionary previously generated and the numpy operation dot, in order to optimize the time execution of the computation.
 ```
 for label in range(1, 10):
@@ -139,31 +143,31 @@ At the same time, for the spacial complexity, we maintain at most the three diff
 For comparing the to solver, the library provide a main of testing that proposes different sudoku boards, ordered from the easiest to the most difficult. For each board, the program tests it first with the relaxation labeling solver, with an iteration stop number equal to 500, then with the constraint propagation and backtracking solver. For both the solver , the program measures the execution time and checks if the result board is a correct solution for the sudoku problem.
 As said before, in this phase we have tested different problems for difficulty, including:
 - easy boards: for the easy boards we arrive at the solution for both the solvers. With the first solver we get the solution only with the constraint propagation phase in less than 0.001 seconds, at the same time, for the relaxation labeling solver we get a solution in about 6 seconds and less than 400 iteration;
-    $$
-    \begin{vmatrix}
-    3 & 7 & 0& 5 & 0 & 0 & 0 & 0 & 6 \\
-	0 & 0 & 0& 3 & 6 & 0 & 0 & 1 & 2 \\
-	0 & 0 & 0& 0 & 9 & 1 & 7 & 5 & 0 \\
-	0 & 0 & 0& 1 & 5 & 4 & 0 & 7 & 0 \\
-	0 & 0 & 3& 0 & 7 & 0 & 6 & 0 & 0 \\
-	0 & 5 & 0& 6 & 3 & 8 & 0 & 0 & 0 \\
-	0 & 6 & 4& 9 & 8 & 0 & 0 & 0 & 0 \\
-	5 & 9 & 0& 0 & 2 & 6 & 0 & 0 & 0 \\
-	2 & 0 & 0& 0 & 0 & 5 & 0 & 6 & 4
-	\end{vmatrix}
-	\Rightarrow
-    \begin{vmatrix}
-    3 & 7 & 1 & 5 & 4 & 2 & 8 & 9 & 6 \\
-    9 & 8 & 5 & 3 & 6 & 7 & 4 & 1 & 2 \\
-    6 & 4 & 2 & 8 & 9 & 1 & 7 & 5 & 3 \\
-    8 & 2 & 6 & 1 & 5 & 4 & 3 & 7 & 9 \\
-    4 & 1 & 3 & 2 & 7 & 9 & 6 & 8 & 5 \\
-    7 & 5 & 9 & 6 & 3 & 8 & 2 & 4 & 1 \\
-    1 & 6 & 4 & 9 & 8 & 3 & 5 & 2 & 7 \\
-    5 & 9 & 7 & 4 & 2 & 6 & 1 & 3 & 8 \\
-    2 & 3 & 8 & 7 & 1 & 5 & 9 & 6 & 4
-    \end{vmatrix}
-    $$
+$$
+\begin{vmatrix}
+3 & 7 & 0& 5 & 0 & 0 & 0 & 0 & 6 \\
+0 & 0 & 0& 3 & 6 & 0 & 0 & 1 & 2 \\
+0 & 0 & 0& 0 & 9 & 1 & 7 & 5 & 0 \\
+0 & 0 & 0& 1 & 5 & 4 & 0 & 7 & 0 \\
+0 & 0 & 3& 0 & 7 & 0 & 6 & 0 & 0 \\
+0 & 5 & 0& 6 & 3 & 8 & 0 & 0 & 0 \\
+0 & 6 & 4& 9 & 8 & 0 & 0 & 0 & 0 \\
+5 & 9 & 0& 0 & 2 & 6 & 0 & 0 & 0 \\
+2 & 0 & 0& 0 & 0 & 5 & 0 & 6 & 4
+\end{vmatrix}
+\Rightarrow
+\begin{vmatrix}
+3 & 7 & 1 & 5 & 4 & 2 & 8 & 9 & 6 \\
+9 & 8 & 5 & 3 & 6 & 7 & 4 & 1 & 2 \\
+6 & 4 & 2 & 8 & 9 & 1 & 7 & 5 & 3 \\
+8 & 2 & 6 & 1 & 5 & 4 & 3 & 7 & 9 \\
+4 & 1 & 3 & 2 & 7 & 9 & 6 & 8 & 5 \\
+7 & 5 & 9 & 6 & 3 & 8 & 2 & 4 & 1 \\
+1 & 6 & 4 & 9 & 8 & 3 & 5 & 2 & 7 \\
+5 & 9 & 7 & 4 & 2 & 6 & 1 & 3 & 8 \\
+2 & 3 & 8 & 7 & 1 & 5 & 9 & 6 & 4
+\end{vmatrix}
+$$
 - medium board: for this type of sudoku problems, the relaxation labeling solver even after 15 seconds of execution and 500 iterations does not converges to the solution. At the same time, not even only the constraint propagation solver is enough to get the solution, but combined with the backtracking (with forward checking) approach, the algorithm provides a solution in less than 0.01 seconds;
 - difficult board: when we arrive to difficult sudoku boards, obviously the relaxation labeling solver does not reach the solution (after about 20 seconds), but the constraint propagation and backtracking solver provides the solution in about 3 seconds.
 
@@ -182,7 +186,11 @@ The future developments could be:
 
 ## References
 [1]url:https://en.wikipedia.org/wiki/Sudoku.
+
 [2]url:https://numpy.org/.
+
 [3]    Tintari  Nicanor  Buoso  Tommaso.Sudoku  solver.  2021.url:https ://github.com/TommasoBuoso/sudoku_solver.
+
 [4]    Prof. Andrea Torsello.Artificial Intelligence: Knowledge representationand planning - Relaxation labeling. 2021.
+
 [5]    Prof. Andrea Torsello.Assignment 1: Sudoku Solver. 2021.url:https://moodle.unive.it/mod/page/view.php?id=294982.
